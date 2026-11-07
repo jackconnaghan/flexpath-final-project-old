@@ -44,7 +44,7 @@ export default function NavBar() {
                     <NavLink class="nav-links" to={"/"} onClick={setMenuVisibilityOnComponentChange}>Home</NavLink>
                     <NavLink class="nav-links" to={"/search"} onClick={setMenuVisibilityOnComponentChange}>Search Books</NavLink>
                     <NavLink class="nav-links" to={"/add"} onClick={setMenuVisibilityOnComponentChange}>Add A Book</NavLink>
-                    <NavLink class="nav-links" to={'/reviews'} onClick={setMenuVisibilityOnComponentChange}>Write A Review</NavLink>
+                    {/* <NavLink class="nav-links" to={'/reviews'} onClick={setMenuVisibilityOnComponentChange}>Write A Review</NavLink> */}
                     <NavLink class="nav-links" to={'/my-lists'} onClick={setMenuVisibilityOnComponentChange}>My Lists</NavLink>
                     <NavLink class="nav-links" to={'/mission'} onClick={setMenuVisibilityOnComponentChange}>Mission Statement</NavLink>
                 </ul>

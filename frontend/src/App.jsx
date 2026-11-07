@@ -50,11 +50,11 @@ function App() {
             </div>
 
           } />
-          <Route class="MyReviews" path="/reviews" element={
+          {/* <Route class="MyReviews" path="/reviews" element={
             <RequireAuth role="ROLE_USER">
               <ReviewsPage />
             </RequireAuth>
-          } />
+          } /> */}
           <Route class="MyLists" path="/my-lists" element={
             <RequireAuth role="ROLE_USER">
               <WishListsPage />

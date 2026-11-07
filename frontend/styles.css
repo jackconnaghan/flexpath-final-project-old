@@ -563,7 +563,7 @@ sexy-btn[type=button]:disabled {
 }
 
 /* Mobile View: Screens 768px and smaller */
-@media (max-width: 768px) {
+@media (max-width: 868px) {
     .mobile-toggle {
         display: block;
     }
