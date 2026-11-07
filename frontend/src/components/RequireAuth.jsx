@@ -2,7 +2,7 @@ import { useAuthStore } from "../stores/authorizationStore";
 import keycloak from "../keycloak";
 import { useWishListStore } from "../stores/useWishListStore";
 
-export default function RequireAuth({ children, role }) {
+export default function RequireAuth({ children, role, customMessage }) {
     const status = useAuthStore((s) => s.status);
     const user = useAuthStore((s) => s.user);
 
@@ -14,7 +14,7 @@ export default function RequireAuth({ children, role }) {
         const here = window.location.href;   // come back to this page afterward
         return (
             <div className="text-center my-5">
-                <p>You need an account to view this page.</p>
+                <p>{customMessage}</p>
                 <button type="button" className="btn btn-success me-2"
                     onClick={() => keycloak.login({ redirectUri: here })}>
                     Log in

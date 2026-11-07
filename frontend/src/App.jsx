@@ -43,9 +43,12 @@ function App() {
           <Route class="Page Not Found" path="/*?" element={<PageNotFound />} />
           <Route class="Search" path="/search" element={<BookSearchPage />} />
           <Route class="Add Book" path="/add" element={
-            <RequireAuth role="ROLE_USER">
-              <AddBookPage />
-            </RequireAuth>
+            <div className="extend-under-navbar">
+              <RequireAuth role="ROLE_USER" customMessage="Log in to create a book.">
+                <AddBookPage />
+              </RequireAuth>
+            </div>
+
           } />
           <Route class="MyReviews" path="/reviews" element={
             <RequireAuth role="ROLE_USER">
@@ -57,10 +60,10 @@ function App() {
               <WishListsPage />
             </RequireAuth>
           } />
-                
-                
-                
-              <Route class="Our Mission" path="/mission" element={<MissionStatementPage />} />
+
+
+
+          <Route class="Our Mission" path="/mission" element={<MissionStatementPage />} />
         </Routes>
       </div>
     </div>

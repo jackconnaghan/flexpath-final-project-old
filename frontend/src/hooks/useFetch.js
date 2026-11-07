@@ -1,5 +1,5 @@
 import { useState } from "react";
-import keycloak from "../keycloak";
+// import keycloak from "../keycloak";
 import { apiFetch } from "../logic/api";
 
 //for my next trick, I will create a custom hook
@@ -31,13 +31,14 @@ export default function useFetch() {
             AND IN THE FUTURE
             just use Tanstack Queryg 
             */
-            setResponse(await apiFetch(baseURL, { method, sendingBook }));
+            setResponse(await apiFetch(baseURL, { method, body: sendingBook }));
             console.log(`response length: ${response.length}`);
             const responseData = await response;
+            console.log(sendingBook);
 
 
             setLoading(false);
-            // setStatusCode(response.status);
+            setStatusCode(response.status);
             return responseData;
         } catch (error) {
             //even though error is a boolean when it's declared,
@@ -46,7 +47,7 @@ export default function useFetch() {
             setError(error.message);
             console.error(`Fetch error: ${error}`);
             setLoading(false);
-            //setStatusCode(response.status);
+            setStatusCode(response.status);
             return null;
         }
 
@@ -72,7 +73,7 @@ export default function useFetch() {
             const responseData = response;
 
             setLoading(false);
-            // setStatusCode(response.status);
+            setStatusCode(response.status);
             return responseData;
         } catch (error) {
             //even though error is a boolean when it's declared,
@@ -105,7 +106,7 @@ export default function useFetch() {
             const responseData = response;
 
             setLoading(false);
-            // setStatusCode(response.status);
+            setStatusCode(response.status);
             return responseData;
         } catch (error) {
             setError(error.message);

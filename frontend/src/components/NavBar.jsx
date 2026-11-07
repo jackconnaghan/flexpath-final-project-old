@@ -33,7 +33,13 @@ export default function NavBar() {
             <nav className="navbar navbar-dark bg-sky-purple fixed-top flex-gap super-navbackground gap-3 log-buttons-holder"
                 style={{ alignItems: "center", padding: "16px 16px", justifyContent: "left" }}>
 
+
                 <Link to={"/"}><img src={Logo} className="little-gif-display thumbnail"></img></Link>
+                
+                <button className="mobile-toggle" id="mobileToggle" onClick={() => setMenuVisibility()}>
+                    {menu ? "X" : "☰"}
+                </button>
+                
                 <ul className={`nav-links ${menu ? 'active' : ''}`}>
                     <NavLink class="nav-links" to={"/"} onClick={setMenuVisibilityOnComponentChange}>Home</NavLink>
                     <NavLink class="nav-links" to={"/search"} onClick={setMenuVisibilityOnComponentChange}>Search Books</NavLink>
@@ -50,9 +56,7 @@ export default function NavBar() {
 
 
 
-                <button className="mobile-toggle" id="mobileToggle" onClick={() => setMenuVisibility()}>
-                    {menu ? "X" : "☰"}
-                </button>
+
 
 
             </nav>

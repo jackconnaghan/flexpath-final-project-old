@@ -24,9 +24,9 @@ export async function apiFetch(url, { method = "GET", body } = []) {
     if (body !== undefined) headers["Content-Type"] = "application/json";
 
     if (keycloak.authenticated) {
-        await keycloak.updateToken(3); //keeps token updated, doesn't log user out so quickly
+        await keycloak.updateToken(30); //keeps token updated, doesn't log user out so quickly
         //couldn't do this with Content-Type as that has a hyphen, but it's the same operation
-        headers.Authorization = `Bearer: ${keycloak.token}`;
+        headers.Authorization = `Bearer ${keycloak.token}`;
     }
 
     //here goes

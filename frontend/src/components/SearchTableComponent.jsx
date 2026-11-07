@@ -10,7 +10,8 @@ import { useWishListStore } from "../stores/useWishListStore";
 import { useAuthStore } from "../stores/authorizationStore";
 import RequireAuth from "./RequireAuth";
 import AddBookToWishListModalComponent from "./AddBookToWishListModalComponent";
-
+import ShowAuth from "./ShowAuth";
+import RevealOnAuth from "./RevealOnAuth";
 // import AddBookToWishListModalComponent from "./AddBookToWishListModalComponent";
 
 export default function SearchTableComponent({ response }) {
@@ -34,6 +35,13 @@ export default function SearchTableComponent({ response }) {
     // function closeModal() {
     //     setOpen(false);
     // }
+    const [open, setOpen] = useState(false);
+    const [selectedRow, setSelectedRow] = useState();
+
+    function openModal(item) {
+        setOpen(true);
+        setSelectedRow(item);
+    }
 
     const dataAreas = [
         "Title",
@@ -69,7 +77,9 @@ export default function SearchTableComponent({ response }) {
                 </a>
                 {modal && <h4>hello</h4>}
             </ErrorBoundary> */}
-
+            <RequireAuth role="ROLE_USER" customMessage="Log In or Create An Account to add books to a List.">
+                <KeepButtonHiddenAndHandleItsBS open={open} selectedRow={selectedRow} openModal={openModal} setOpen={setOpen} setSelectedRow={setSelectedRow} />
+            </RequireAuth>
             <table className="table container-fluid px-0 table-striped w-100%">
 
                 <thead>
@@ -85,14 +95,19 @@ export default function SearchTableComponent({ response }) {
                         response.map(item => (
                             //pass the iterator at the top level
                             <tr className="col" key={item["id"]}>
-                                <td>
-                                    <button type="link" className="col" onClick={(e) => {
-                                        e.preventDefault();
-                                        openModal(item);
-                                    }}>
-                                        Add to List
-                                    </button>
-                                </td>
+                                <RevealOnAuth role="ROLE_USER">
+                                    <td>
+
+                                        <button type="link" className="col" onClick={(e) => {
+                                            e.preventDefault();
+                                            openModal(item);
+                                        }}>
+                                            Add to List
+                                        </button>
+
+
+                                    </td>
+                                </RevealOnAuth>
                                 <td>{item["title"]}</td>
                                 <td>{item["author"]}</td>
                                 <td>{item["pub_year"]}</td>
@@ -113,9 +128,7 @@ export default function SearchTableComponent({ response }) {
                     )}
                 </tbody>
             </table>
-            <RequireAuth role="ROLE_USER">
-                <KeepButtonHiddenAndHandleItsBS />
-            </RequireAuth>
+
 
 
 
@@ -124,14 +137,13 @@ export default function SearchTableComponent({ response }) {
 }
 
 //additional component to handle the buttons and modal when a user is logged in
-function KeepButtonHiddenAndHandleItsBS() {
+function KeepButtonHiddenAndHandleItsBS({open, selectedRow, openModal, setSelectedRow, setOpen}) {
 
     const username = useAuthStore((s) => s.user.username);
     const lists = useWishListStore((s) => s.userLists[username]);
     const { userLists } = useWishListStore();
 
-    const [open, setOpen] = useState(false);
-    const [selectedRow, setSelectedRow] = useState();
+
 
     const modalStyle = {
         position: 'absolute',
@@ -144,14 +156,6 @@ function KeepButtonHiddenAndHandleItsBS() {
         boxShadow: 24,
         p: 4,
     };
-
-
-
-
-    function openModal(item) {
-        setOpen(true);
-        setSelectedRow(item);
-    }
 
     function closeModal() {
         setOpen(false);

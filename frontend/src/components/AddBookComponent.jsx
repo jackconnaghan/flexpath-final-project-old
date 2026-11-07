@@ -72,7 +72,7 @@ export default function AddBookComponent() {
     // }
 
     return (
-        <div className="top row align-add-book-items">
+        <div className="top row align-add-book-items ">
 
             <div className="col search-page-inputs container">
                 <form className="col" onSubmit={(e) => {
@@ -131,7 +131,6 @@ export default function AddBookComponent() {
                     <button type="submit" disabled={!titleInput} className="btn btn-primary sexy-btn">Submit</button>
 
                 </form>
-                <animated.div className="animation-edit" />
 
             </div>
             {/* <ErrorBoundary error={error}>
@@ -147,7 +146,7 @@ export default function AddBookComponent() {
                     </div>
 
                 )}
-                {!loading && statusCode === 201 && response && (
+                {!loading && !error && response?.id && (
                     <div className="text-left align-center">
                         <h3>Good to go!</h3>
                         <table>
