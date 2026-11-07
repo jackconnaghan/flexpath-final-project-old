@@ -15,10 +15,11 @@ export default function ListsComponent({ user, lists }) {
     //const lists = useWishListStore((s) => s.userLists[user]);
     const addList = useWishListStore((s) => s.addList);
     const removeList = useWishListStore((s) => s.removeList);
+    // const loadLists = useWishListStore((s) => s.loadLists);
 
     // useEffect(() => {
-    //     const fetchedResponse = fetchUserLists(baseURL, "GET");
-    //     addList(user, fetchedResponse);
+    //     // const fetchedResponse = fetchUserLists(baseURL, "GET");
+    //     // addList(user, fetchedResponse);
     // }, []);
 
     return (

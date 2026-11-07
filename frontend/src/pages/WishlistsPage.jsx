@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import ListsComponent from "../components/ListsComponent";
 import RequireAuth from "../components/RequireAuth";
+import { useAuthStore } from "../stores/authorizationStore";
 import useFetch from "../hooks/useFetch";
-import { useAuthStore, syncAuthFromKeycloak } from "../stores/authorizationStore";
 // import { useCache } from "../contexts/useCacheContext";
 import { useState } from "react";
 import { useWishListStore } from "../stores/useWishListStore";
@@ -36,12 +36,12 @@ function MyWishListsSetup() {
     const lists = useWishListStore((s) => s.userLists[username]);
     //captures setLists function (which turns response directly into userLists)
     const setLists = useWishListStore((s) => s.setLists);
+    //loads lists to send to ListsComponent
+    const loadLists = useWishListStore((s) => s.loadLists);
 
-    const { fetchUserLists, error } = useFetch();
-
-    // const status = useAuthStore((s) => s.status);
-    // const user = useAuthStore((s) => s.user);
-    const baseURL = `/api/wishlists/mine`;
+    //REMEMBER: DON'T CALL ANYTHING BUT apiFetch. It will handle it.
+    //Put that hair in a bun and handle it
+    const { error } = useFetch();
 
     useEffect(() => {
 
@@ -52,7 +52,7 @@ function MyWishListsSetup() {
         let cancelled = false;
         (async () => {
             //
-            const data = await fetchUserLists(baseURL, "GET");
+            const data = await loadLists(username);
             if (!cancelled && Array.isArray(data)) { //cancelled in case user clicks away mid-load
                 setLists(username, data);         // store the whole array for this user
             }
@@ -65,15 +65,6 @@ function MyWishListsSetup() {
             ? <p className="m-5 text-danger">{error}</p>
             : <p className="m-5">Loading your lists…</p>;
     }
-
-
-//     fetchUserLists(baseURL, "GET")
-//         .then(
-//             response.map(item => (
-//                 setLists(response[item])
-//             )))
-//     console.log(`userLists: ${userLists[0]}`);
-// }, []);
 
 return (
     <>
