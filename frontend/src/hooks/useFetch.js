@@ -1,6 +1,6 @@
 import { useState } from "react";
-//import { getCookie } from "../logic/getCookie";
 import keycloak from "../keycloak";
+import { apiFetch } from "../logic/api";
 
 //for my next trick, I will create a custom hook
 //to take care of fetching data from the server
@@ -25,46 +25,20 @@ export default function useFetch() {
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
         try {
-            //the awaited Promise outside the try block
-            //is still running, so the await fetch 
-            //request has to wait until resolve
-            //runs after 1500 mili
-            const headers = {};
+            /*
+            BROOOOOO I JUST GOT RID OF SO MUCH SHIT
+            check api.js for the centralized/abstracted fetch request code
+            AND IN THE FUTURE
+            just use Tanstack Queryg 
+            */
+            setResponse(await apiFetch(baseURL, { method, sendingBook }));
+            console.log(`response length: ${response.length}`);
+            const responseData = await response;
 
-            if (sendingBook) {
-                headers["Content-Type"] = "application/json";
-            }
-
-            if (keycloak.authenticated) {
-                try {
-                    await keycloak.updateToken(30); //keeps token updated, doesn't log user out so quickly
-                } catch {
-                    // The refresh token is also expired: the Keycloak session is over
-                    keycloak.login({ redirectUri: window.location.href });
-                    return;
-                }
-                headers.authorization = `Bearer ${keycloak.token}`;
-            }
-
-            let response = await fetch(baseURL,
-                {
-                    method,
-                    body: sendingBook ? JSON.stringify(sendingBook) : undefined,
-                    headers,
-                }
-            );
-            //Status code gets thrown away if we throw an error, so catch it before
-            setStatusCode(response.status);
-            if (!response.ok) {
-                throw new Error(`Request failed with status ${response.status}`);
-            }
-            //check for empty response data via successful response code
-            let responseData = response.status === 204 ? null : await response.json();
-            setResponse(responseData);
-            console.log(`response length: ${responseData.length}`);
 
             setLoading(false);
-            //setStatusCode(response.status);
+            // setStatusCode(response.status);
+            return responseData;
         } catch (error) {
             //even though error is a boolean when it's declared,
             //setting it to a string works just fine. Who knows 
@@ -73,6 +47,7 @@ export default function useFetch() {
             console.error(`Fetch error: ${error}`);
             setLoading(false);
             //setStatusCode(response.status);
+            return null;
         }
 
         // return !error ? JSON.stringify(response) : null;
@@ -91,26 +66,14 @@ export default function useFetch() {
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
         try {
-            //the awaited Promise outside the try block
-            //is still running, so the await fetch 
-            //request has to wait until resolve
-            //runs after 1500 mili
-            let response = await fetch(baseURL,
-                {
-                    method,
-                    headers: { "Content-Type": "application/json" }
-                }
-            );
-            setStatusCode(response.status);
-            if (!response.ok) {
-                throw new Error(`Request failed with status ${response.status}`);
-            }
-            let responseData = await response.json();
-            setResponse(responseData);
-            console.log(`response length: ${responseData.length}`);
+            
+            setResponse(await apiFetch(baseURL, { method }));
+            console.log(`response length: ${response.length}`);
+            const responseData = response;
 
             setLoading(false);
-            //setStatusCode(response.status);
+            // setStatusCode(response.status);
+            return responseData;
         } catch (error) {
             //even though error is a boolean when it's declared,
             //setting it to a string works just fine. Who knows 
@@ -118,7 +81,37 @@ export default function useFetch() {
             setError(error.message);
             console.error(`Fetch error: ${error}`);
             setLoading(false);
-            //setStatusCode(response.status);
+            return null;
+        }
+    }
+    /*
+    ///
+    LOOK INTO CONSOLIDATING THIS AND THE ABOVE FUNCTIONS
+    INTO ONE "fetchGET" FUNCTION. THEY ACCEPT THE SAME PARAMS
+    AND ARE ABSTRACTED ALREADY
+    ///
+    */
+    async function fetchUserLists(baseURL, method) {
+        //sets error to false in case the last submission attempt
+        //failed
+        setLoading(true);
+        setError(false);
+        setStatusCode(null);
+
+        try {
+
+            setResponse(await apiFetch(baseURL, { method }));
+            console.log(`response length: ${response.length}`);
+            const responseData = response;
+
+            setLoading(false);
+            // setStatusCode(response.status);
+            return responseData;
+        } catch (error) {
+            setError(error.message);
+            console.error(`Fetch error: ${error}`);
+            setLoading(false);
+            return null;
         }
     }
 
@@ -129,6 +122,7 @@ export default function useFetch() {
     return ({
         fetchData: fetchDataCreateBook,
         fetchSearchData,
+        fetchUserLists,
         setResponse,
         response,
         loading,

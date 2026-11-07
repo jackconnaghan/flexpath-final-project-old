@@ -1,5 +1,6 @@
 import { useAuthStore } from "../stores/authorizationStore";
 import keycloak from "../keycloak";
+import { useWishListStore } from "../stores/useWishListStore";
 
 export default function RequireAuth({ children, role }) {
     const status = useAuthStore((s) => s.status);

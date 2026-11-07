@@ -8,14 +8,14 @@ import useFetch from "../hooks/useFetch";
 // export default function FormComponent({ input, setInput,
 //     filterTypeValue, setNewFilterType, filterTypeOptions, 
 //     handleSubmit, handleDrop }) {
-export default function SearchFormComponent({onSearch, loading }) {
+export default function SearchFormComponent({ onSearch, loading }) {
 
     const form = useForm({
         defaultValues: {
             title: "",
             author: "",
         },
-        onSubmit: async ({value}) => {
+        onSubmit: async ({ value }) => {
             onSearch(value);
         },
         // validators: {

@@ -4,7 +4,7 @@ import SearchFormComponent from "./SearchFormComponent";
 import useFetch from "../hooks/useFetch";
 import TextResponseComponent from "./SearchTextResponseComponent";
 import FasterLogo from "../../public/FasterLoadingGif.gif";
-import { getCookie } from "../logic/getCookie";
+// import { getCookie } from "../logic/getCookie";
 //import AddBookFormComponent from "./AddBookFormComponent";
 import ErrorBoundary from "./ErrorBoundary";
 import { animated } from "@react-spring/web";

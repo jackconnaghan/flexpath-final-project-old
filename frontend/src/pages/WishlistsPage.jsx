@@ -1,39 +1,84 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ListsComponent from "../components/ListsComponent";
 import RequireAuth from "../components/RequireAuth";
 import useFetch from "../hooks/useFetch";
 import { useAuthStore, syncAuthFromKeycloak } from "../stores/authorizationStore";
-import useCach
+// import { useCache } from "../contexts/useCacheContext";
+import { useState } from "react";
+import { useWishListStore } from "../stores/useWishListStore";
 
-export default function WishListsPage() {
+export default function WishListPage() {
+    /*
+According to Claude, a common crash in login-ready pages is when 
+a username gets called before it's needed. If a user reached this page
+without a username, then the old setup would have crashed due to 
+username=null. The setup below allows the user to see the page without 
+crashing, and will also prompt them to login if they are not.
+    */
+    return (
+        <div className="extend-under-navbar search-just">
+            <RequireAuth role="ROLE_USER">
+                <MyWishListsSetup />
+            </RequireAuth>
+        </div>
+    )
+    //Calls MyWishListsSetup within the RequireAuth; common loop
+}
+
+function MyWishListsSetup() {
 
     //Host components related to wishlists
     //Host common props; setup context?
 
-    const status = useAuthStore((s) => s.status);
-    const user = useAuthStore((s) => s.user);
+    const username = useAuthStore((s) => s.user.username);
+    //setting local state for caching a user's lists
+    //sets the list of lists' username to the above
+    const lists = useWishListStore((s) => s.userLists[username]);
+    //captures setLists function (which turns response directly into userLists)
+    const setLists = useWishListStore((s) => s.setLists);
 
-    const { fetchSearchData, setResponse, response, loading, error, statusCode } = useFetch();
+    const { fetchUserLists, error } = useFetch();
 
-    //gonna use cache on this one so the API request only gets called on the first 
-    //load of the page
-    const 
+    // const status = useAuthStore((s) => s.status);
+    // const user = useAuthStore((s) => s.user);
+    const baseURL = `/api/wishlists/mine`;
 
-    return (
-        <div className="extend-under-navbar search-just">
-            <RequireAuth role="ROLE_USER">
-                <h1 className="m-5">Here be your lists...</h1>
-                <ListsComponent user={user.username} response={response} />
-            </RequireAuth>
+    useEffect(() => {
 
-            {/* <RequireAuth role="ROLE_USER">
-                <table>
-                    <thead>
+        if (lists !== undefined) return; //does nothing if lists has something in it
+        //basically need to do this for any and all cache setups
+        //does the same thing as your "sexy" cache setup from the midterm
 
-                    </thead>
-                </table>
-            </RequireAuth> */}
+        let cancelled = false;
+        (async () => {
+            //
+            const data = await fetchUserLists(baseURL, "GET");
+            if (!cancelled && Array.isArray(data)) { //cancelled in case user clicks away mid-load
+                setLists(username, data);         // store the whole array for this user
+            }
+        })(); //() makes the function call IMMEDIATELY, no need to call it manually later
+        return () => { cancelled = true; }; //"cleanup" function that cancels the call if user clicks away
+    }, [lists, username]); // eslint-disable-line react-hooks/exhaustive-deps
 
-        </div>
-    )
+    if (lists === undefined) {
+        return error
+            ? <p className="m-5 text-danger">{error}</p>
+            : <p className="m-5">Loading your lists…</p>;
+    }
+
+
+//     fetchUserLists(baseURL, "GET")
+//         .then(
+//             response.map(item => (
+//                 setLists(response[item])
+//             )))
+//     console.log(`userLists: ${userLists[0]}`);
+// }, []);
+
+return (
+    <>
+        <h1 className="m-5">Here be your lists...</h1>
+        <ListsComponent username={username} lists={lists}/>
+    </>
+)
 }

@@ -2,7 +2,7 @@
 Pulled from FlexPath Midterm Project
 */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Route, Routes, Router, NavLink } from "react-router-dom";
 import Home from "../pages/Home";
 import LittleBabyGif from "../../public/LittleBabyGif.gif";
@@ -19,6 +19,13 @@ export default function NavBar() {
         toggleMenu(!menu);
     }
 
+    function setMenuVisibilityOnComponentChange() {
+        toggleMenu(false);
+    }
+
+    // useEffect(() =>
+    //     setMenuVisibilityOnComponentChange()
+    // , []);
 
     return (
         <div className="">
@@ -28,23 +35,23 @@ export default function NavBar() {
 
                 <Link to={"/"}><img src={Logo} className="little-gif-display thumbnail"></img></Link>
                 <ul className={`nav-links ${menu ? 'active' : ''}`}>
-                    <NavLink class="nav-links" to={"/"}>Home</NavLink>
-                    <NavLink class="nav-links" to={"/search"}>Search Books</NavLink>
-                    <NavLink class="nav-links" to={"/add"}>Add A Book</NavLink>
-                    <NavLink class="nav-links" to={'/reviews'}>Write A Review</NavLink>
-                    <NavLink class="nav-links" to={'/my-lists'}>My Lists</NavLink>
-                    <NavLink class="nav-links" to={'/mission'}>Mission Statement</NavLink>
+                    <NavLink class="nav-links" to={"/"} onClick={setMenuVisibilityOnComponentChange}>Home</NavLink>
+                    <NavLink class="nav-links" to={"/search"} onClick={setMenuVisibilityOnComponentChange}>Search Books</NavLink>
+                    <NavLink class="nav-links" to={"/add"} onClick={setMenuVisibilityOnComponentChange}>Add A Book</NavLink>
+                    <NavLink class="nav-links" to={'/reviews'} onClick={setMenuVisibilityOnComponentChange}>Write A Review</NavLink>
+                    <NavLink class="nav-links" to={'/my-lists'} onClick={setMenuVisibilityOnComponentChange}>My Lists</NavLink>
+                    <NavLink class="nav-links" to={'/mission'} onClick={setMenuVisibilityOnComponentChange}>Mission Statement</NavLink>
                 </ul>
                 <ShowAuth role="ROLE_USER" className="col-auto row log-buttons">
-                        <NavLink class="nav-links" to={'/my-account'}>My Account</NavLink>
-                    </ShowAuth>
+                    <NavLink class="nav-links" to={'/my-account'}>My Account</NavLink>
+                </ShowAuth>
 
 
 
 
 
                 <button className="mobile-toggle" id="mobileToggle" onClick={() => setMenuVisibility()}>
-                    ☰
+                    {menu ? "X" : "☰"}
                 </button>
 
 
