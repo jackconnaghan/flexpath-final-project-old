@@ -22,6 +22,7 @@ import RequireAuth from "./components/RequireAuth";
 import AddBookPage from "./pages/AddBookPage";
 import WishListsPage from "./pages/WishListsPage";
 import ReviewsPage from "./pages/ReviewsPage";
+import ListDetailPage from "./pages/ListDetailPage";
 
 function App() {
 
@@ -61,8 +62,15 @@ function App() {
                 <WishListsPage />
               </RequireAuth>
             </div>
-
           } />
+          <Route class="MyUniqueWishList" path="/my-lists/:listId" element={
+            <div className="extend-under-navbar">
+              <RequireAuth role="ROLE_USER" customMessage="How'd you get here???">
+                <ListDetailPage />
+              </RequireAuth>
+            </div>
+          }
+          />
 
 
 

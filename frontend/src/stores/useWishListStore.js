@@ -1,6 +1,10 @@
 import { create } from "zustand";
 import { apiFetch } from "../logic/api";
 
+//(s) is the store's current state.
+//calling s.{something} reads s's value of that something.
+//call it as a function in order to name the state.
+//no function call = no state returned. Oops!
 export const useWishListStore = create((set, get) => ({
     //another zustand create set.
     //userLists is an empty object, which can be null

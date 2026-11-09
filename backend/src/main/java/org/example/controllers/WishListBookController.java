@@ -5,6 +5,7 @@ import org.example.daos.WishListDao;
 import org.example.models.Book;
 import org.example.models.WishList;
 import org.example.models.WishListBook;
+import org.example.models.WishListBookWithReview;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,8 +30,13 @@ public class WishListBookController {
     //this will act as a "getAllWishLists" method
     //@PreAuthorize("hasRole('ADMIN') or @wishListSecurity.isOwner(#username, authentication)")
     @GetMapping(path="/{wishlist_id}")
+    //user either has to be an admin or have a username that matches the list.
+    //if this said "hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" then ANY user would be able to change the
+    //lists of any username. Check this on other controllers
+
+    //grabs reviews too now fuck it
     @PreAuthorize("hasRole('ROLE_ADMIN') or @wishListSecurity.isOwner(#wishlist_id, authentication)")
-    public List<Book> getWishListBooksByListId(Authentication a, @PathVariable long wishlist_id) {return wishListBookDao.getWishListBooksByListId(a.getName(), wishlist_id); }
+    public List<WishListBookWithReview> getWishListBooksByListId(Authentication a, @PathVariable long wishlist_id) {return wishListBookDao.getWishListBooksByListId(a.getName(), wishlist_id); }
 
 
     @PostMapping(path="{wishlist_id}/add")
@@ -62,17 +68,17 @@ public class WishListBookController {
 ////commenting for now because I DONT WANT TO FUCK WITH IT RIGHT NOW1111
 //    @ResponseStatus(HttpStatus.CREATED)
 //    @PostMapping("/create")
-//    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-//    public WishList createWishList(@RequestBody WishList wl, Authentication a) { return wishListDao.createWishList(wl, a.getName()); }
+//    @PreAuthorize("hasRole('ADMIN') or @wishListSecurity.isOwner(#wishlist_id, authentication)")
+//    public WishList createWishList(@RequestBody WishList wl, Authentication a) { return wishListBookDao.createWishList(wl, a.getName()); }
 //
 //    @PutMapping("/update")
 //    @PreAuthorize("hasRole('ADMIN') or wishListSecurity.isOwner(#username, authentication")
 //    public WishList updateWishList(@RequestBody WishList wl, Authentication a) { return wishListDao.updateWishList(wl, a.getName()); }
 //
-//    @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN') or wishListSecurity.isOwner(#username, authentication")
-//    public int deleteWishListById(@PathVariable Long id, Authentication a) {
-//        return wishListDao.deleteBookById(id);
-//    }
+    @DeleteMapping("/{wishlist_id}")
+    @PreAuthorize("hasRole('ADMIN') or @wishListSecurity.isOwner(#wishlist_id, authentication)")
+    public int deleteWishListBookByListId(@PathVariable Long wishlist_id, Authentication a, @RequestBody Long book_id) {
+        return wishListBookDao.deleteWishListBookByListIdAndBookId(wishlist_id, a.getName(), book_id);
+    }
 
 }

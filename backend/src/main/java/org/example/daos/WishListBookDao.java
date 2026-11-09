@@ -4,6 +4,7 @@ import org.example.exceptions.NoTitleException;
 import org.example.models.Book;
 import org.example.models.WishList;
 import org.example.models.WishListBook;
+import org.example.models.WishListBookWithReview;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -53,14 +54,15 @@ public class WishListBookDao {
     ///
     //Making new thingies from scratch
     //because this one takes a lot of joins
-    public List<Book> getWishListBooksByListId(String username, long wishlist_id) {
+    public List<WishListBookWithReview> getWishListBooksByListId(String username, long wishlist_id) {
         try {
-            return jdbcTemplate.query("SELECT books.* " +
+            return jdbcTemplate.query("SELECT books.*, reviews.review_text " +
                             "FROM books " +
                             "JOIN wishlist_books ON books.id = wishlist_books.book_id " +
                             "JOIN wishlists ON wishlist_books.wishlist_id = wishlists.id " +
-                            "WHERE wishlist_books.wishlist_id = ? AND username = ?",
-                    this::mapToBook, wishlist_id, username);
+                            "JOIN reviews ON books.id = reviews.book_id " +
+                            "WHERE wishlist_books.wishlist_id = ? AND wishlists.username = ?",
+                    this::mapToBookWithReviews, wishlist_id, username);
         } catch (EmptyResultDataAccessException e) {
             e.printStackTrace();
             return null;
@@ -137,38 +139,33 @@ public class WishListBookDao {
 
         return books != null && books.size() > 0;
     }
-//
-//    public WishList updateWishList(WishList wl, String username) {
-//
+//wishlistbook is always going to point to a unique book, but it might as
+    //well have the option to change to another list
+    public WishList updateWishListBookByBookId(String username, Long book_id, long old_wishlist_id, Long new_wishlist_id) {
+
+        //dont need keyholder because there's no PK AI
 //        KeyHolder keyHolder = new GeneratedKeyHolder();
-//        String sql = "UPDATE wishlists SET username=?, list_title=? WHERE id=?;";
+        String sql = "UPDATE wishlist_books SET wishlist_id = ? WHERE book_id = ? AND wishlist_id = ?;";
+
+        try {
+            //OrderItem tempOrderItem = jdbcTemplate.queryForObject("SELECT * FROM order_items WHERE id = ?", this::mapToOrderItem, orderItem.getId());
+            jdbcTemplate.update(sql, new_wishlist_id, old_wishlist_id, book_id);
+            //returns the wishlist the book was sent to
+            return jdbcTemplate.queryForObject("SELECT * FROM wishlists WHERE id=?", this::mapToWishList, new_wishlist_id);
+        }  catch (DataAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 //
-//        try {
-//            //OrderItem tempOrderItem = jdbcTemplate.queryForObject("SELECT * FROM order_items WHERE id = ?", this::mapToOrderItem, orderItem.getId());
-//            jdbcTemplate.update(connection -> {
-//                //RETURN_GENERATED_KEYS brings back the ids of all objects created in this
-//                //update
-//                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-//                ps.setString(1, wl.getUsername());
-//                ps.setString(2, wl.getUsername());
-//                return ps;
-//            }, keyHolder);
-//            return jdbcTemplate.queryForObject("SELECT * FROM wishlists WHERE id=?", this::mapToWishList, wl.getId());
-//        }  catch (DataAccessException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//
-//    }
-//
-//    public int deleteBookById(Long id) {
-//        try {
-//            return jdbcTemplate.update("DELETE FROM wishlist_books WHERE id=?", id);
-//        } catch (DataAccessException e) {
-//            e.printStackTrace();
-//            return 0;
-//        }
-//    }
+    public int deleteWishListBookByListIdAndBookId(Long wishlist_id, String username, Long book_id) {
+        try {
+            return jdbcTemplate.update("DELETE FROM wishlist_books WHERE wishlist_id=? AND book_id=?", wishlist_id, book_id);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
     private WishListBook mapToWishListBook(ResultSet rs, int rowNum) throws SQLException {
         return new WishListBook(
@@ -187,6 +184,28 @@ public class WishListBookDao {
                 rs.getInt("pub_year"),
                 rs.getString("isbn_13"),
                 rs.getInt("pages")
+        );
+    }
+
+    private WishListBookWithReview mapToBookWithReviews(ResultSet rs, int rowNum) throws SQLException {
+        return new WishListBookWithReview(
+                rs.getLong("id"),
+                rs.getString("title"),
+                rs.getString("author"),
+                rs.getInt("pub_year"),
+                rs.getString("isbn_13"),
+                rs.getInt("pages"),
+                rs.getString("review_text")
+        );
+    }
+
+    //get that mapToWishList too fuck it get errbody in here
+    private WishList mapToWishList(ResultSet rs, int rowNum) throws SQLException {
+        return new WishList(
+                rs.getLong("id"),
+                rs.getString("username"),
+                rs.getString("list_title"),
+                rs.getBoolean("is_public")
         );
     }
 }

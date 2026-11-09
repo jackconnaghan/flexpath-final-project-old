@@ -40,11 +40,10 @@ export default function ListsComponent({ user, lists }) {
 
                             {lists.map(item => (
                                 //pass the iterator at the top level
-                                <tr className="col" key={item["list_title"]}>
-
+                                <tr className="col" key={item.list_title}>
                                     <td>
-                                        <NavLink to={`/my-lists/${item["list_title"]}/`}>
-                                            {item["list_title"]}
+                                        <NavLink to={`/my-lists/${item.id}/`}>
+                                            {item.list_title}
                                             </NavLink></td>
                                     {/* <td>{item["is_public"]}</td> */}
                                     {/* <td>

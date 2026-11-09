@@ -50,8 +50,10 @@ function MyWishListsSetup() {
 Stuff that makes the list's books show up
     */
    const [showList, setShowList] = useState(false);
+   const [selectedList, setSelectedList] = useState();
 
    function openList() {
+    setSelectedList()
     setShowList(true);
    }
 
@@ -59,6 +61,9 @@ Stuff that makes the list's books show up
     setShowList(false);
    }
 
+   /*
+   End stuff that makes the list show up
+   */
     useEffect(() => {
 
         if (lists !== undefined) return; //does nothing if lists has something in it
