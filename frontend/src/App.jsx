@@ -56,9 +56,12 @@ function App() {
             </RequireAuth>
           } /> */}
           <Route class="MyLists" path="/my-lists" element={
-            <RequireAuth role="ROLE_USER">
-              <WishListsPage />
-            </RequireAuth>
+            <div className="extend-under-navbar">
+              <RequireAuth role="ROLE_USER" customMessage="Sign In or Sign Up to make and view lists.">
+                <WishListsPage />
+              </RequireAuth>
+            </div>
+
           } />
 
 

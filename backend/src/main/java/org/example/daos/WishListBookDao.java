@@ -78,7 +78,7 @@ public class WishListBookDao {
 
     //in other words, this is called "createWishListBook"
     public WishListBook addBookToWishList(long book_id, String username, long wishlist_id) {
-        String sql = "INSERT INTO wishlist_books (wishlist_id, book_id) VALUES (?, ?);";
+        //String sql = "INSERT INTO wishlist_books (wishlist_id, book_id) VALUES (?, ?);";
 
         if (wishlist_id <= 0L || book_id <= 0L) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "WishListBooks must have a valid wishlist_id and book_id");
@@ -92,7 +92,7 @@ public class WishListBookDao {
         //check how many books are already in a wishlist
         //and prevent additions beyond 150 books
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM wishlist_books WHERE wishlist_id = ?;", Integer.class, wishlist_id);
-        if (count >= MAX_WISHLIST_BOOKS) {
+        if (count >= MAX_WISHLIST_BOOKS && count != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "A wishlist can hold at most " + MAX_WISHLIST_BOOKS + " books.");
         }

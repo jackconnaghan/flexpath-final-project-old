@@ -29,7 +29,7 @@ public class WishListBookController {
     //this will act as a "getAllWishLists" method
     //@PreAuthorize("hasRole('ADMIN') or @wishListSecurity.isOwner(#username, authentication)")
     @GetMapping(path="/{wishlist_id}")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN') or @wishListSecurity.isOwner(#wishlist_id, authentication)")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @wishListSecurity.isOwner(#wishlist_id, authentication)")
     public List<Book> getWishListBooksByListId(Authentication a, @PathVariable long wishlist_id) {return wishListBookDao.getWishListBooksByListId(a.getName(), wishlist_id); }
 
 

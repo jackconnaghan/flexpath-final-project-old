@@ -22,7 +22,7 @@ export default function useFetch() {
         //setting the setTimeout promise in this way
         //bypasses having to set the setTimeout around the try/catch
         // block, which wouldn't work anyway due to rules of hooks
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         try {
             /*
@@ -47,7 +47,7 @@ export default function useFetch() {
             setError(error.message);
             console.error(`Fetch error: ${error}`);
             setLoading(false);
-            setStatusCode(response.status);
+            // setStatusCode(response.status);
             return null;
         }
 

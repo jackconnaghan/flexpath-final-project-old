@@ -12,7 +12,6 @@ import RequireAuth from "./RequireAuth";
 import AddBookToWishListModalComponent from "./AddBookToWishListModalComponent";
 import ShowAuth from "./ShowAuth";
 import RevealOnAuth from "./RevealOnAuth";
-// import AddBookToWishListModalComponent from "./AddBookToWishListModalComponent";
 
 export default function SearchTableComponent({ response }) {
 
@@ -39,8 +38,9 @@ export default function SearchTableComponent({ response }) {
     const [selectedRow, setSelectedRow] = useState();
 
     function openModal(item) {
-        setOpen(true);
         setSelectedRow(item);
+        setOpen(true);
+        
     }
 
     const dataAreas = [
@@ -81,13 +81,11 @@ export default function SearchTableComponent({ response }) {
                 <KeepButtonHiddenAndHandleItsBS open={open} selectedRow={selectedRow} openModal={openModal} setOpen={setOpen} setSelectedRow={setSelectedRow} />
             </RequireAuth>
             <table className="table container-fluid px-0 table-striped w-100%">
-
                 <thead>
                     <tr>
                         {dataAreas.map((item, key) => (
                             <th scope="col" key={key}>{item}</th>
                         ))}
-
                     </tr>
                 </thead>
                 <tbody>
@@ -97,15 +95,12 @@ export default function SearchTableComponent({ response }) {
                             <tr className="col" key={item["id"]}>
                                 <RevealOnAuth role="ROLE_USER">
                                     <td>
-
                                         <button type="link" className="col" onClick={(e) => {
                                             e.preventDefault();
                                             openModal(item);
                                         }}>
                                             Add to List
                                         </button>
-
-
                                     </td>
                                 </RevealOnAuth>
                                 <td>{item["title"]}</td>
@@ -128,10 +123,6 @@ export default function SearchTableComponent({ response }) {
                     )}
                 </tbody>
             </table>
-
-
-
-
         </div>
     );
 }
@@ -165,7 +156,7 @@ function KeepButtonHiddenAndHandleItsBS({open, selectedRow, openModal, setSelect
     return (
         <>
             {open ?
-                <AddBookToWishListModalComponent setSelectedRow={setSelectedRow} modalStyle={modalStyle}
+                <AddBookToWishListModalComponent setSelectedRow={setSelectedRow} selectedRow={selectedRow} modalStyle={modalStyle}
                     openModal={openModal} closeModal={closeModal} open={open} />
                 : null}
         </>

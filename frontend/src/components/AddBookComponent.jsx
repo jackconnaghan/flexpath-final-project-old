@@ -9,6 +9,8 @@ import FasterLogo from "../../public/FasterLoadingGif.gif";
 import ErrorBoundary from "./ErrorBoundary";
 import { animated } from "@react-spring/web";
 
+
+//I plan to update this to a Tanstack Form later
 export default function AddBookComponent() {
 
     const { fetchData: fetchDataCreateBook, setResponse, response, loading, error, statusCode } = useFetch();
@@ -21,14 +23,6 @@ export default function AddBookComponent() {
     const [pagesInput, setPagesInput] = useState();
 
     const method = "POST";
-
-    // const gothamKnights = {
-    //     title: "Gotham Knights",
-    //     author: "Dude McKnight",
-    //     pub_year: "1998",
-    //     isbn_13: "910209139019024129490104",
-    //     pages: 91
-    // }
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -58,18 +52,6 @@ export default function AddBookComponent() {
             default: return "Not good!";
         }
     }
-    //     if (status === 200) {
-    //         return "Book added successfully!";
-    //     } else if (status === 409) {
-    //         return "That book already exists in our database.";
-    //     } else if (status === 403) {
-    //         return "You do not have permission to add a book. How did you get here?";
-    //     } else if (status === null) {
-    //         return "Use the form above to add a book."
-    //     } else {
-    //         return "Could not add book. Try again later."
-    //     }
-    // }
 
     return (
         <div className="top row align-add-book-items ">
@@ -133,9 +115,9 @@ export default function AddBookComponent() {
                 </form>
 
             </div>
-            {/* <ErrorBoundary error={error}>
+            <ErrorBoundary error={error}>
                 <TextResponseComponent response={response} loading={loading} error={error} status={statusCode} />
-            </ErrorBoundary> */}
+            </ErrorBoundary>
 
             <div className="col">
                 {loading && <h3>Adding yo book cuh...</h3>}

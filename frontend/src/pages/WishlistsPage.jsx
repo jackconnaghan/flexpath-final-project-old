@@ -43,12 +43,29 @@ function MyWishListsSetup() {
     //Put that hair in a bun and handle it
     const { error } = useFetch();
 
+
+
+
+    /*
+Stuff that makes the list's books show up
+    */
+   const [showList, setShowList] = useState(false);
+
+   function openList() {
+    setShowList(true);
+   }
+
+   function closeList() {
+    setShowList(false);
+   }
+
     useEffect(() => {
 
         if (lists !== undefined) return; //does nothing if lists has something in it
         //basically need to do this for any and all cache setups
         //does the same thing as your "sexy" cache setup from the midterm
 
+        //in-useEffect "state" (we call that a fucking variable)
         let cancelled = false;
         (async () => {
             //
@@ -68,7 +85,8 @@ function MyWishListsSetup() {
 
 return (
     <>
-        <h1 className="m-5">Here be your lists...</h1>
+
+        <h1 className="m-5 align-center">Here be your lists...</h1>
         <ListsComponent username={username} lists={lists}/>
     </>
 )
