@@ -204,7 +204,6 @@ public class ReviewDao {
     private Review mapToReview(ResultSet rs, int rowNum) throws SQLException {
         return new Review(
                 rs.getLong("id"),
-                rs.getLong("user_id"),
                 rs.getString("username"),
                 rs.getLong("book_id"),
                 rs.getString("review_text"),

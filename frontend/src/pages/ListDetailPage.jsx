@@ -47,7 +47,37 @@ function ListDetails() {
         } catch (err) {
             setLocalError(err);
         }
+    }
+    //used to have an apiFetch to get the reviewId, but
+    //I put the reviewId in the booksInList apiFetch instead
+    //which means it arrives in the useEffect
+    async function handleReviewChange(book_id, review_id, action) {
+        switch (action) {
+            case "DELETE":
+                try {
+                    await apiFetch(`/api/reviews/delete/${review_id}`, { method: action });
+                    setBooksInList((previousList) =>
+                        //maps through the previousList 
+                        previousList.map((p) =>
+                            //takes the id of the list and matches the book_id,
+                            //then copies everything in book BUT sets review_id and review_text to null
+                            p.id === book_id ? { ...p, review_id: null, review_text: null } : p
+                        ));
+                } catch (err) {
+                    setLocalError(err);
+                }
+                break;
+            default:
+                console.log("oops!");
+                break;
 
+        }
+
+        // try {
+        //     await apiFetch(`/api/reviews/user/${username}`)
+        // } catch (err) {
+        //     setLocalError(err);
+        // }
     }
     useEffect(() => {
         //similar to the AddToWishListComponent, 
@@ -122,7 +152,7 @@ function ListDetails() {
                                             }}>Remove From List</button>
                                         </td>
                                         <td>
-                                            <button type="button">Write Review</button>
+                                            <button type="button" onClick={() => handleReviewChange(book.id, book.review_id, "DELETE")}>Delete Review</button>
                                         </td>
                                         <td>{book.title}</td>
                                         <td>{book.author}</td>

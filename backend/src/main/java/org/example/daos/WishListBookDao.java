@@ -56,7 +56,7 @@ public class WishListBookDao {
     //because this one takes a lot of joins
     public List<WishListBookWithReview> getWishListBooksByListId(String username, long wishlist_id) {
         try {
-            return jdbcTemplate.query("SELECT books.*, reviews.review_text " +
+            return jdbcTemplate.query("SELECT books.*, reviews.review_text, reviews.id AS review_id " +
                             "FROM books " +
                             "JOIN wishlist_books ON books.id = wishlist_books.book_id " +
                             "JOIN wishlists ON wishlist_books.wishlist_id = wishlists.id " +
@@ -195,7 +195,8 @@ public class WishListBookDao {
                 rs.getInt("pub_year"),
                 rs.getString("isbn_13"),
                 rs.getInt("pages"),
-                rs.getString("review_text")
+                rs.getString("review_text"),
+                rs.getLong("review_id")
         );
     }
 

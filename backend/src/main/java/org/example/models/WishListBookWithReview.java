@@ -8,6 +8,7 @@ public record WishListBookWithReview(
         Integer pubYear,
         String isbn13,
         Integer pages,
-        String review_text     // null when the user hasn't reviewed this book
+        String review_text,
+        Long review_id
 //        Integer star_rating
 ) {}

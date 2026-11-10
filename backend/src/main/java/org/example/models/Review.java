@@ -29,7 +29,7 @@ public class Review {
     //handle the logic of the object elsewhere. Such as in the ReviewDao(see createReview
     //for the review-filling code).
 
-    public Review(Long id, Long user_id, String username, Long book_id, String review_text, int star_rating, Date review_date) {
+    public Review(Long id, String username, Long book_id, String review_text, int star_rating, Date review_date) {
         this.id = id;
         //this.user_id = user_id;
         this.username = username;
