@@ -74,14 +74,15 @@ public class ReviewDao {
     }
 
     public Review createReview(Review review) {
+        //put star rating back in when you're ready to implement that
         String sql = "INSERT INTO reviews (username, book_id, review_text, star_rating, review_date) VALUES (?, ?, ?, ?, ?);";
 
         if (review.getUsername() == null || isBlank(review.getUsername())) {
             throw new NoTitleException(HttpStatus.BAD_REQUEST, "A review needs a user. Are you logged in?");
         }
-        if (ratingIsInvalid(review.getStar_rating())) {
-            throw new NoTitleException(HttpStatus.BAD_REQUEST, "A review needs a star rating.");
-        }
+//        if (ratingIsInvalid(review.getStar_rating())) {
+//            throw new NoTitleException(HttpStatus.BAD_REQUEST, "A review needs a star rating.");
+//        }
         if (idIsBlank(review.getBook_id())) {
             throw new NoTitleException(HttpStatus.BAD_REQUEST, "A review needs a book id.");
         }
@@ -92,7 +93,8 @@ public class ReviewDao {
         String username = review.getUsername();
         Long book_id = review.getBook_id();
         String review_text = isBlank(review.getReview_text()) ? DEFAULT_REVIEW_TEXT : review.getReview_text();
-        int star_rating = review.getStar_rating();
+        int star_rating = DEFAULT_STAR_RATING;
+        //int star_rating = review.getStar_rating();
         Date review_date = reviewDateIsNull(review.getReview_date()) ? DEFAULT_REVIEW_DATE : review.getReview_date();
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -145,47 +147,48 @@ public class ReviewDao {
 
     private boolean reviewDateIsNull(java.sql.Date review_date) {return review_date == null;}
 
-    public Review updateReviewById(Review review, Long id) {
+    public Review updateReviewById(String review_text, Long review_id) {
         //username and book don't change, and I don't want to enter a book's entire info dump
         //on every update if i'm jiust updating one thing. so COMPARE
-        Review reviewToUpdate = getReviewByReviewId(id);
+        Review reviewToUpdate = getReviewByReviewId(review_id);
 
         if (reviewToUpdate == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This review does not exist. Try creating a review before updating it.");
         }
 
-        String reviewText;
-        if (review.getReview_text() != null) {
-            reviewText = review.getReview_text();
-        } else {
-            reviewText = reviewToUpdate.getReview_text();
-        }
+        //this shit made no sense, so much easier to just send review_text as a string!!!!!
+        //at least that's what lil ole me things :)
+//        String reviewText;
+//        if (!review_text.isEmpty()) {
+//            reviewText = review.getReview_text();
+//        } else {
+//            reviewText = reviewToUpdate.getReview_text();
+//        }
 
         //had to change star_rating to an Integer so it could be checked for null value
-        Integer reviewStars;
-        if (review.getStar_rating() != null) {
-            reviewStars = review.getStar_rating();
-        } else if (ratingIsInvalid(review.getStar_rating())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Star rating must be  " + minStarRating + " and " + maxStarRating + ".");
-        } else {
-            reviewStars = reviewToUpdate.getStar_rating();
-        }
-
-        Date reviewDate;
-        //currently this allows a user to set a date that comes after the present date...Oopsie poopsie!
-        if (review.getReview_date() != null) {
-            reviewDate = review.getReview_date();
-        } else {
-            reviewDate = reviewToUpdate.getReview_date();
-        }
+        //REMOVING STAR RATING CHECKS FOR NOW!!!!
+//        Integer reviewStars;
+//        if (review.getStar_rating() != null) {
+//            reviewStars = review.getStar_rating();
+//        } else if (ratingIsInvalid(review.getStar_rating())) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Star rating must be  " + minStarRating + " and " + maxStarRating + ".");
+//        } else {
+//            reviewStars = reviewToUpdate.getStar_rating();
+//        }
+//CURDATE in thingy takes care of this, otherwise it doesn't get updated
+//        Date reviewDate;
+//        //currently this allows a user to set a date that comes after the present date...Oopsie poopsie!
+//        if (review.getReview_date() != null) {
+//            reviewDate = review.getReview_date();
+//        } else {
+//            reviewDate = reviewToUpdate.getReview_date();
+//        }
 
         try {
-            jdbcTemplate.update("UPDATE reviews SET review_text=?, star_rating=?, review_date=? WHERE id=?",
-                    reviewText,
-                    reviewStars,
-                    reviewDate,
-                    id);
-            return jdbcTemplate.queryForObject("SELECT * FROM reviews WHERE id=?", this::mapToReview, review.getId());
+            jdbcTemplate.update("UPDATE reviews SET review_text=? WHERE id=?",
+                    review_text,
+                    review_id);
+            return jdbcTemplate.queryForObject("SELECT * FROM reviews WHERE id=?", this::mapToReview, review_id);
         } catch (DataAccessException e) {
             e.printStackTrace();
             return null;

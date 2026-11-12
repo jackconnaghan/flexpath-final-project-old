@@ -57,16 +57,16 @@ public class WishListController {
 //    }
 //commenting for now because I DONT WANT TO FUCK WITH IT RIGHT NOW1111
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/create")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN') or wishListSecurity.isOwner(#username, authentication)")
-    public WishList createWishList(@RequestBody WishList wl, Authentication a) { return wishListDao.createWishList(wl, a.getName()); }
+    @PostMapping("/create/{wishlist_title}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public WishList createWishList(@PathVariable String wishlist_title, Authentication a) { return wishListDao.createWishList(wishlist_title, a.getName()); }
 
     @PutMapping("/update")
-    @PreAuthorize("hasRole('ADMIN') or wishListSecurity.isOwner(#username, authentication)")
+    @PreAuthorize("hasRole('ADMIN') or @wishListSecurity.isOwner(#username, authentication)")
     public WishList updateWishList(@RequestBody WishList wl, Authentication a) { return wishListDao.updateWishList(wl, a.getName()); }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or wishListSecurity.isOwner(#username, authentication)")
+    @PreAuthorize("hasRole('ADMIN') or @wishListSecurity.isOwner(#username, authentication)")
     public int deleteWishListById(@PathVariable Long id, Authentication a) {
         return wishListDao.deleteBookById(id);
     }

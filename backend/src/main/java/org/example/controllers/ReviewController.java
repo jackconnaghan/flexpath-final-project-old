@@ -44,11 +44,11 @@ public class ReviewController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/update/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @reviewSecurity.isOwner(#id, authentication)")
-    public Review updateReviewById(@RequestBody Review review, @PathVariable Long id) {
+    @PutMapping("/update/{review_id}")
+    @PreAuthorize("hasRole('ADMIN') or @reviewSecurity.isOwner(#review_id, authentication)")
+    public Review updateReviewById(@RequestBody String review_text, @PathVariable Long review_id, Authentication auth) {
 
-        return reviewDao.updateReviewById(review, id);
+        return reviewDao.updateReviewById(review_text, review_id);
     }
 
     @DeleteMapping("/delete/{id}")

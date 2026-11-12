@@ -67,7 +67,7 @@ export default function AddBookToWishListModalComponent({ setSelectedRow, select
             onClose={closeModal}>
             <Box sx={modalStyle}>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    Which list would you like to add {selectedRow.title} to?
+                    Which list would you like to add <strong>{selectedRow.title}</strong> to?
                 </Typography>
                 <form
                     onSubmit={(e) => {
@@ -109,9 +109,9 @@ export default function AddBookToWishListModalComponent({ setSelectedRow, select
 
                 <ErrorBoundary error={error}>
                     <div>
-                        {/* {!loading && !error && !response && <p></p>} */}
-                        {!loading && !error && !response && <p>Book added successfully!</p>}
-                        {!loading && statusCode !== 201 && error && <p>Book could not be added: {determineStatusCodeError(statusCode)}</p>}
+                        {loading && <p>Loading...</p>}
+                        {!loading && !error && response?.book_id && <p>Book added successfully!</p>}
+                        {!loading && error && <p>Book could not be added: {determineStatusCodeError(statusCode)}</p>}
                     </div>
                 </ErrorBoundary>
 

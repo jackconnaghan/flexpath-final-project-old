@@ -60,8 +60,8 @@ public class WishListBookDao {
                             "FROM books " +
                             "JOIN wishlist_books ON books.id = wishlist_books.book_id " +
                             "JOIN wishlists ON wishlist_books.wishlist_id = wishlists.id " +
-                            "JOIN reviews ON books.id = reviews.book_id " +
-                            "WHERE wishlist_books.wishlist_id = ? AND wishlists.username = ?",
+                            "LEFT JOIN reviews ON books.id = reviews.book_id AND reviews.username = wishlists.username " +
+                            "WHERE wishlist_books.wishlist_id = ? AND wishlists.username = ?;",
                     this::mapToBookWithReviews, wishlist_id, username);
         } catch (EmptyResultDataAccessException e) {
             e.printStackTrace();

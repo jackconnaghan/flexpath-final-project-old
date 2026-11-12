@@ -16,6 +16,10 @@ public class ReviewSecurity {
 
     public boolean isOwner(long reviewId, Authentication auth) {
         Review review = reviewDao.getReviewByReviewId(reviewId);
+        System.out.println("Review ID: " + reviewId);
+        System.out.println("Review Author: " + review.getUsername());
+        System.out.println("Caller: [" + auth.getName() +"]");
         return review != null && review.getUsername().equals(auth.getName());
     }
+
 }

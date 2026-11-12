@@ -40,7 +40,7 @@ export default function SearchTableComponent({ response }) {
     function openModal(item) {
         setSelectedRow(item);
         setOpen(true);
-        
+
     }
 
     const dataAreas = [
@@ -71,18 +71,16 @@ export default function SearchTableComponent({ response }) {
 
     return (
         <div>
-            {/* <ErrorBoundary>
-                <a href="#terms" onClick={(e) => openModal(e)} >
-                    Practice Modal
-                </a>
-                {modal && <h4>hello</h4>}
-            </ErrorBoundary> */}
             <RequireAuth role="ROLE_USER" customMessage="Log In or Create An Account to add books to a List.">
                 <KeepButtonHiddenAndHandleItsBS open={open} selectedRow={selectedRow} openModal={openModal} setOpen={setOpen} setSelectedRow={setSelectedRow} />
             </RequireAuth>
+
             <table className="table container-fluid px-0 table-striped w-100%">
                 <thead>
                     <tr>
+                        <RevealOnAuth role="ROLE_USER">
+                            <th></th>
+                        </RevealOnAuth>
                         {dataAreas.map((item, key) => (
                             <th scope="col" key={key}>{item}</th>
                         ))}
@@ -128,7 +126,7 @@ export default function SearchTableComponent({ response }) {
 }
 
 //additional component to handle the buttons and modal when a user is logged in
-function KeepButtonHiddenAndHandleItsBS({open, selectedRow, openModal, setSelectedRow, setOpen}) {
+function KeepButtonHiddenAndHandleItsBS({ open, selectedRow, openModal, setSelectedRow, setOpen }) {
 
     const username = useAuthStore((s) => s.user.username);
     const lists = useWishListStore((s) => s.userLists[username]);
